@@ -41,8 +41,40 @@
 		</p>
 	</fieldset>
 </form>
-<script type="text/javascript">
- 
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>
+<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
+<script>
+$('#myForm').validate({
+	rules: {
+		email: {
+			required: true,
+			email: true
+		},
+		emailConfirmation: {
+			equalTo: "#email"
+			// must match first email field
+		},
+		country: {
+			// required: true
+
+		},
+		zipCode: {
+			required: true
+			// must be valid zip code (5 numbers?)
+		},
+		password: {
+			required: true,
+			// must be 6-32 characters long
+			rangelength: [3, 32]
+		},
+		passwordConfirmation: {
+			equalTo: "#password"
+			// must match first password field
+		}
+	}
+});
 </script>
 </body>
 </html>
