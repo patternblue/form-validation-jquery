@@ -1,80 +1,109 @@
 <html>
 <head>
 	<title>The Odin Project: Validating a Form with jQuery</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
-<form id="myForm">
-	<fieldset>
-		<legend>Please provide your information in order to sign up</legend>
-		<p>
-			<label for="email">Your Email</label>
-			<input type="text" id="email" name="email"/>
-		</p>
-		<p>
-			<label for="emailConfirmation">Email Confirmation</label>
-			<input type="text" id="emailConfirmation" name="emailConfirmation"/>
-		</p>
-		<p>
-			<label for="country">Country</label>
-			<select id="country" name="country">
-				<option value="0">United States of America</option>
-				<option value="1">Canada</option>
-				<option value="2">Mexico</option>
-			</select>
-		</p>
-		<p>
-			<label for="zipCode">Zip Code</label>
-			<input type="text" id="zipCode" name="zipCode"/>
-		</p>
-		<p>
-			<label for="password">Password</label>
-			<input type="text" id="password" name="password"/>
-		</p>
-		<p>
-			<label for="passwordConfirmation">Password Confirmation</label>
-			<input type="text" id="passwordConfirmation" name="passwordConfirmation"/>
-		</p>
-		<p>
-			<!-- <label>Submit</label> -->
-			<input type="submit"/>
-		</p>
-	</fieldset>
-</form>
-<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
-<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-<script src="http://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>
-<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
-<script>
-$('#myForm').validate({
-	rules: {
-		email: {
-			required: true,
-			email: true
-		},
-		emailConfirmation: {
-			equalTo: "#email"
-			// must match first email field
-		},
-		country: {
-			// required: true
+	<form id="myForm">
+		<fieldset>
+			<legend>Please provide your information in order to sign up</legend>
+			<p>
+				<label for="email">Your Email</label>
+				<input type="text" id="email" name="email"/>
+			</p>
+			<p>
+				<label for="emailConfirmation">Email Confirmation</label>
+				<input type="text" id="emailConfirmation" name="emailConfirmation"/>
+			</p>
+			<p>
+				<label for="country">Country</label>
+				<select id="country" value="" name="country">
+					<option value="0">United States of America</option>
+					<option value="1">Canada</option>
+					<option value="2">Mexico</option>
+				</select>
+			</p>
+			<p>
+				<label for="zipCode">Zip Code</label>
+				<input type="text" id="zipCode" name="zipCode"/>
+			</p>
+			<p>
+				<label for="password">Password</label>
+				<input type="password" id="password" name="password"/>
+			</p>
+			<p>
+				<label for="passwordConfirmation">Password Confirmation</label>
+				<input type="password" id="passwordConfirmation" name="passwordConfirmation"/>
+			</p>
+			<p>
+				<!-- <label>Submit</label> -->
+				<input type="submit" name="submit"/>
+				<div id="submitError">Please fill in all fields.</div>
+			</p>
+		</fieldset>
+	</form>
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="http://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>
+	<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
 
-		},
-		zipCode: {
-			required: true
-			// must be valid zip code (5 numbers?)
-		},
-		password: {
-			required: true,
-			// must be 6-32 characters long
-			rangelength: [3, 32]
-		},
-		passwordConfirmation: {
-			equalTo: "#password"
-			// must match first password field
-		}
-	}
-});
-</script>
+	<script>
+		// added method for 'zipCode' requirement
+		jQuery.validator.addMethod("zipCode", function(value, element){
+			return this.optional(element) || /^\d{5}(?:-\d{4})?$/.test(value);
+		}, "Please provide a valid zipcode.");
+
+		// options for the validate method
+		$('#myForm').validate({
+			rules: {
+				email: {
+					// field is required, must be a valid email address
+					required: true,
+					email: true
+				},
+				emailConfirmation: {
+					// must match first email field
+					equalTo: "#email"
+				},
+				country: {
+					// required: true
+				},
+				zipCode: {
+					required: true,
+					// must be valid zip code (5 numbers?)
+					zipCode: true
+				},
+				password: {
+					required: true,
+					// must be 6-32 characters long
+					rangelength: [3, 32]
+				},
+				passwordConfirmation: {
+					// must match first password field
+					equalTo: "#password"
+				}
+			}, 
+			// custom messages for email confirmation and password confirmation fields 
+			messages: {
+				emailConfirmation: {
+					equalTo: "Please confirm your email."
+				},
+				passwordConfirmation: {
+					equalTo: "Please type your password again."
+				}
+			},
+			// show error div if the form has any invalid fields after clicking submit 
+			invalidHandler: function(event, validator){
+				var errors = validator.numberOfInvalids();
+				if(errors){
+					$('#submitError').show();
+				}else{
+					$('#submitError').hide();
+				}
+			}
+		});
+	</script>
+
 </body>
 </html>
